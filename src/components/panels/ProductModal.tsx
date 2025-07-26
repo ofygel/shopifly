@@ -1,182 +1,115 @@
 'use client'
 
-import { useState } from 'react'
-import Panel from '@/components/panels/Panel'
+import { useCallback } from 'react'
+import Image from 'next/image'
 import { useUIStore } from '@/store/ui'
+import { useFavorites, FavoritesState, FavItem } from '@/store/favorites'
 import { Product } from '@/types/product'
-import { useFavorites } from '@/store/favorites'
-import { useCartStore } from '@/store/cart'
-import { cn } from '@/lib/cn'
 
-const TABS = [
-  { key: 'description', label: 'Описание' },
-  { key: 'shipping', label: 'Доставка' },
-  { key: 'returns', label: 'Возврат' },
-] as const
+interface Props {
+  product: Product
+}
 
-export default function ProductModal() {
-  const isOpen = useUIStore((s) => s.isOpen('product'))
-  const product = useUIStore((s) => s.modalProduct as Product | null)
-  const close = useUIStore((s) => s.closePanel)
+export default function ProductModal({ product }: Props) {
+  const closePanel = useUIStore((s) => s.closePanel)
+  const openPanel  = useUIStore((s) => s.openPanel)
 
-  const { add: addFav, remove: removeFav, has } = useFavorites()
-  const inFav = product ? has(product.id) : false
+  // Получаем экшены/селекторы из favorites
+  const addFav    = useFavorites((s) => s.add)
+  const removeFav = useFavorites((s) => s.remove)
+  const inFav     = useFavorites((s) => s.has(product.id))
 
-  const addToCart = useCartStore((s) => s.add)
+  const onAddToCart = useCallback(() => {
+    openPanel('cart', product)
+  }, [openPanel, product])
 
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]['key']>('description')
-  const [currentImg, setCurrentImg] = useState(0)
-  const [size, setSize] = useState<string | undefined>(undefined)
-
-  if (!isOpen || !product) return null
-
-  const toggleFav = () => {
-    if (inFav) removeFav(product.id)
-    else addFav({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] })
-  }
-
-  const onAddToCart = () => {
-    addToCart(
-      {
-        id: product.id,
-        name: product.name,
+  const toggleFav = useCallback(() => {
+    if (inFav) {
+      removeFav(product.id)
+    } else {
+      const item: FavItem = {
+        id:    product.id,
+        name:  product.name,
         price: product.price,
-        image: product.images?.[0],
-        size,
-      },
-      1
-    )
-    close('product')
-  }
+        image: product.imageUrl,
+      }
+      addFav(item)
+    }
+  }, [inFav, product, addFav, removeFav])
 
   return (
-    <Panel name="product" width={980} className="max-h-[90vh] bg-neutral-900 text-white">
-      <div className="flex flex-col lg:flex-row gap-8 h-full min-h-[60vh]">
-        {/* Галерея */}
-        <div className="w-full lg:w-[520px] flex-shrink-0">
-          <div className="relative w-full aspect-[4/5] bg-white/5 rounded-2xl overflow-hidden">
-            <img
-              src={product.images[currentImg]}
-              alt={product.name}
-              className="w-full h-full object-cover"
-            />
-            {product.images.length > 1 && (
-              <>
-                <button
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() =>
-                    setCurrentImg((i) => (i - 1 + product.images.length) % product.images.length)
-                  }
-                >
-                  ‹
-                </button>
-                <button
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 rounded-full w-8 h-8 flex items-center justify-center"
-                  onClick={() => setCurrentImg((i) => (i + 1) % product.images.length)}
-                >
-                  ›
-                </button>
-              </>
-            )}
-          </div>
-
-          {product.images.length > 1 && (
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {product.images.map((src: string, idx: number) => (
-                <img
-                  key={idx}
-                  src={src}
-                  alt=""
-                  className={cn(
-                    'w-full aspect-[4/5] object-cover rounded-lg cursor-pointer opacity-70 hover:opacity-100',
-                    idx === currentImg && 'ring-2 ring-white opacity-100'
-                  )}
-                  onClick={() => setCurrentImg(idx)}
-                />
-              ))}
-            </div>
+    <div
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
+      onClick={() => closePanel('product')}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="relative bg-white/10 backdrop-blur-lg rounded-2xl max-w-4xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-2"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Фото */}
+        <div className="relative w-full h-80 md:h-auto">
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            fill
+            className="object-contain"
+          />
+          {product.discount! > 0 && (
+            <span className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded">
+              -{product.discount}%
+            </span>
           )}
         </div>
 
-        {/* Info */}
-        <div className="flex-1 flex flex-col min-h-0">
-          <h2 className="text-2xl font-semibold">{product.name}</h2>
-          <div className="mt-2 text-xl font-bold">{product.price.toLocaleString()} ₸</div>
+        {/* Контент */}
+        <div className="p-6 text-white flex flex-col">
+          <button
+            onClick={() => closePanel('product')}
+            aria-label="Закрыть"
+            className="absolute top-4 right-4 text-2xl leading-none"
+          >
+            ×
+          </button>
+
+          <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
+          <p className="text-2xl mb-4">{product.price.toLocaleString()} ₸</p>
 
           {product.sizes?.length ? (
-            <div className="mt-6">
-              <div className="mb-2 text-sm text-white/70">Размер</div>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map((s: string) => (
-                  <button
-                    key={s}
-                    onClick={() => setSize(s)}
-                    className={cn(
-                      'px-4 py-2 rounded-full border border-white/20 hover:bg-white/10',
-                      size === s && 'bg-white text-black'
-                    )}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+            <div className="flex gap-2 mb-4">
+              {product.sizes.map((s) => (
+                <button
+                  key={s}
+                  className="border border-white rounded px-4 py-2 hover:bg-white/20 transition"
+                >
+                  {s}
+                </button>
+              ))}
             </div>
           ) : null}
 
-          {/* Tabs */}
-          <div className="mt-6">
-            <div className="flex items-center gap-4 border-b border-white/10">
-              {TABS.map((t) => {
-                const disabled =
-                  (t.key === 'description' && !product.description) ||
-                  (t.key === 'shipping' && !product.shipping) ||
-                  (t.key === 'returns' && !product.returns)
-                if (disabled) return null
-                return (
-                  <button
-                    key={t.key}
-                    className={cn(
-                      'py-2 text-sm border-b-2 border-transparent hover:border-white/30',
-                      activeTab === t.key && 'border-white font-semibold'
-                    )}
-                    onClick={() => setActiveTab(t.key)}
-                  >
-                    {t.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className="mt-4 text-sm whitespace-pre-wrap leading-relaxed text-white/90 overflow-y-auto pr-2 max-h-[30vh]">
-              {activeTab === 'description' && product.description}
-              {activeTab === 'shipping' && product.shipping}
-              {activeTab === 'returns' && product.returns}
-            </div>
-          </div>
-
-          {/* Bottom actions */}
-          <div className="mt-auto pt-6 flex items-center gap-4">
+          <div className="flex gap-4 mb-6">
             <button
               onClick={onAddToCart}
-              disabled={!!product.sizes?.length && !size}
-              className="flex-1 bg-white text-black rounded-full py-3 font-semibold hover:bg-gray-100 disabled:opacity-50"
+              className="flex-1 bg-white text-black py-3 rounded-lg font-medium"
             >
-              В корзину
+              Добавить в корзину
             </button>
-
             <button
               onClick={toggleFav}
-              className={cn(
-                'w-12 h-12 rounded-full flex items-center justify-center text-lg',
-                inFav ? 'bg-pink-500' : 'bg-white/10 hover:bg-white/20'
-              )}
-              title={inFav ? 'Убрать из избранного' : 'В избранное'}
+              aria-label={inFav ? 'Удалить из избранного' : 'Добавить в избранное'}
+              className={`px-4 py-3 rounded-lg transition ${
+                inFav ? 'bg-red-600 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+              }`}
             >
-              ♥
+              {inFav ? '♥' : '♡'}
             </button>
           </div>
+
+          <p className="text-sm flex-1 overflow-auto">{product.description}</p>
         </div>
       </div>
-    </Panel>
+    </div>
   )
 }

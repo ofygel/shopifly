@@ -10,7 +10,8 @@ export type FavItem = {
   price?: number
 }
 
-type State = {
+// Переименовали State → FavoritesState и сделали именованный экспорт
+export type FavoritesState = {
   items: FavItem[]
   add: (item: FavItem) => void
   remove: (id: string) => void
@@ -18,7 +19,7 @@ type State = {
   has: (id: string) => boolean
 }
 
-export const useFavorites = create<State>()(
+export const useFavorites = create<FavoritesState>()(
   persist(
     (set, get) => ({
       items: [],
@@ -26,7 +27,8 @@ export const useFavorites = create<State>()(
         set((s) =>
           s.items.find((i) => i.id === item.id) ? s : { items: [...s.items, item] }
         ),
-      remove: (id) => set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
+      remove: (id) =>
+        set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
       clear: () => set({ items: [] }),
       has: (id) => !!get().items.find((i) => i.id === id),
     }),
