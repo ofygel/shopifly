@@ -1,0 +1,36 @@
+{
+  "name": "shopifly",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --no-lint",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.83.0",
+    "framer-motion": "^12.23.9",
+    "immer": "^10.1.1",
+    "nanoid": "^5.1.5",
+    "next": "15.4.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.61.1",
+    "usehooks-ts": "^3.1.1",
+    "zod": "^4.0.9",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
