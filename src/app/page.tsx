@@ -1,5 +1,7 @@
-import { SPA } from '@/spa'
+"use client";
+
+import { SPA } from "../spa";
 
 export default function Page() {
-  return <SPA />
+  return <SPA />;
 }

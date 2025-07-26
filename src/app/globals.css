@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 /* Системные переменные и шрифты */
-@import "tailwindcss";
+@layer base {
+  html, body {
+    background-color: theme('colors.neutral.900');
+  }
+}
 
 :root {
   --background: #ffffff;
