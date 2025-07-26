@@ -16,7 +16,7 @@ export type Product = {
   order: number;
 };
 
-// Тип плитки слайдера на главной
+// Тип плитки-«highlight» на главной
 export type Highlight = {
   id: string;
   images: string[];
@@ -24,6 +24,14 @@ export type Highlight = {
   badge?: string;
   link?: string;
   intervalMs?: number;
+};
+
+// Тип контакта
+export type Contact = {
+  id: string;
+  type: 'phone' | 'email' | 'address' | string;
+  label: string;
+  value: string;
 };
 
 // Настройки главной страницы
@@ -34,12 +42,13 @@ export type HomeSettings = {
   tags?: string[];
 };
 
-// Общие настройки
+// Общие настройки приложения
 export type Settings = {
   home: HomeSettings;
+  contacts: Contact[];
 };
 
-// Состояние CMS
+// Состояние CMS Store
 export type CMSState = {
   products: Product[];
   settings: Settings;
@@ -50,7 +59,6 @@ export type CMSState = {
   updateSettings: (patch: Partial<Settings>) => void;
 };
 
-// Создаём хранилище Zustand с персистом
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -87,6 +95,7 @@ export const useCMSStore = create<CMSState>()(
           ],
           tags: [],
         },
+        contacts: [],
       },
 
       createProduct: (data) => {
@@ -136,5 +145,4 @@ export const useCMSStore = create<CMSState>()(
   )
 );
 
-// Экспорт alias для удобства
 export { useCMSStore as useCMS };
