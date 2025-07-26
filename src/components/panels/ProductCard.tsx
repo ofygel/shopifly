@@ -1,24 +1,19 @@
-// src/components/panels/ProductCard.tsx
-'use client'
-
-import Image from 'next/image'
-import { Product } from '@/types/product'
-// Предполагаем, что ваш zustand‑стор экспортирует хук useUIStore
-import { useUIStore } from '@/store/ui'
+'use client';
+import Image from 'next/image';
+import { Product } from '@/types/product';
+import { useUIStore } from '@/store/ui';
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  // берём только функцию открытия Quick View
-  const openQuickView = useUIStore((s) => s.openQuickView)
-
-  // discount может быть undefined → приводим к числу
-  const discount = product.discount ?? 0
+  const openQuickView = useUIStore((s) => s.openQuickView);
+  const discount = product.discount ?? 0;
+  const isNew = product.isNew ?? false;
 
   return (
-    <div className="relative group rounded-xl overflow-hidden">
+    <div className="relative group rounded-xl overflow-hidden border border-transparent hover:border-white transition">
       {/* Фон плитки */}
       <div className="absolute inset-0 bg-black/10 transition-opacity group-hover:opacity-0" />
 
@@ -31,41 +26,29 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="relative w-full h-full object-cover transition-transform group-hover:scale-105"
       />
 
-      {/* Бейдж скидки */}
+      {/* Бейджи */}
+      {isNew && (
+        <div className="absolute top-3 left-3 bg-white/80 text-black text-xs uppercase px-2 py-1 rounded">
+          Новинка
+        </div>
+      )}
       {discount > 0 && (
-        <div className="absolute top-3 left-3 bg-black/70 text-white text-sm px-2 py-1 rounded">
+        <div className="absolute top-3 right-3 bg-red-600 text-white text-sm px-2 py-1 rounded">
           -{discount}%
         </div>
       )}
 
-      {/* Плашка с ценой */}
-      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3">
-        <span className="text-white text-lg font-medium">
-          {product.price.toLocaleString()} ₸
-        </span>
-      </div>
-
-      {/* Кнопка Quick View */}
-      <button
-        onClick={() => openQuickView(product)}
-        className="absolute bottom-3 right-3 p-2 bg-white/20 rounded-full opacity-0 group-hover:opacity-100 transition"
-        aria-label="Быстрый просмотр"
-      >
-        {/* Встроенная SVG‑иконка лупы */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5 text-white"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+      {/* Информация */}
+      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 space-y-1">
+        <h3 className="text-white text-lg font-medium">{product.name}</h3>
+        <span className="text-white">{product.price.toLocaleString()} ₸</span>
+        <button
+          onClick={() => openQuickView(product)}
+          className="mt-2 w-full bg-white/20 text-white text-sm py-1 rounded"
         >
-          <circle cx={11} cy={11} r={8} />
-          <line x1={21} y1={21} x2={16.65} y2={16.65} />
-        </svg>
-      </button>
+          Быстрый просмотр
+        </button>
+      </div>
     </div>
-  )
+  );
 }

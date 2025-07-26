@@ -65,8 +65,8 @@ export const useCMSStore = create<CMSState>()(
       products: [],
       settings: {
         home: {
-          heroTitle: 'Создай свой стиль',
-          heroSubtitle: 'Ощути премиум‑качество женской одежды',
+          heroTitle: 'Создай свой стиль вместе с нами',
+          heroSubtitle: 'Коллекция женской одежды с акцентом на качество и комфорт.',
           highlights: [
             {
               id: nanoid(),

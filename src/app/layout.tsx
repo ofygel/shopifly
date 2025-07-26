@@ -1,27 +1,21 @@
-// src/app/layout.tsx
 import './globals.css'
 import SplashManager from '@/components/SplashManager'
 import VideoBg from '@/components/VideoBg'
-import Header from '@/components/Header'
-import { Providers } from './providers'
+import AppWrapper from '@/components/AppWrapper'
+import ClientLayout from '@/components/ClientLayout'
+import { ReactNode } from 'react'
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
       <body className="relative overflow-x-hidden text-white">
-        {/* SplashManager сам рендерит Splash и плавно показывает контент */}
         <SplashManager>
           <VideoBg />
-          <Providers>
-            <Header />
-            <main className="relative z-10 pt-16">
+          <AppWrapper>
+            <ClientLayout>
               {children}
-            </main>
-          </Providers>
+            </ClientLayout>
+          </AppWrapper>
         </SplashManager>
       </body>
     </html>

@@ -7,4 +7,5 @@ export interface Product {
   discount?: number  // процент скидки
   sizes?: string[]   // доступные размеры
   description?: string
+  isNew?: boolean    // новинка
 }

@@ -1,7 +1,7 @@
 // src/data/products.ts
 import { Product } from '@/types/product'
 
-export const products: Product[] = [
+const products: Product[] = [
   {
     id: 'p1',
     name: 'Black Buttoned Dress',
@@ -11,6 +11,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L'],
     description:
       'Черное платье с пуговицами. Состав: 100% хлопок. Машинная стирка при 30°C.',
+    isNew: true,
   },
   {
     id: 'p2',
@@ -21,6 +22,7 @@ export const products: Product[] = [
     sizes: ['S', 'M', 'L', 'XL'],
     description:
       'Элегантный пиджак из вискозы. Подкладка: 100% полиэстер.',
+    isNew: true,
   },
   {
     id: 'p3',
@@ -31,6 +33,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M'],
     description:
       'Топ из натурального шёлка. Ручная стирка.',
+    isNew: true,
   },
   {
     id: 'p4',
@@ -41,6 +44,7 @@ export const products: Product[] = [
     sizes: ['M', 'L', 'XL'],
     description:
       'Брюки с широкими штанинами. 100% полиэстер.',
+    isNew: false,
   },
   {
     id: 'p5',
@@ -51,6 +55,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M'],
     description:
       'Мини‑юбка из искусственной кожи. Срок службы 3 года.',
+    isNew: false,
   },
   {
     id: 'p6',
@@ -61,6 +66,7 @@ export const products: Product[] = [
     sizes: ['S', 'M', 'L', 'XL'],
     description:
       'Джинсовая куртка средней длины. 98% хлопок, 2% эластан.',
+    isNew: false,
   },
   {
     id: 'p7',
@@ -71,6 +77,7 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L'],
     description:
       'Плиссированная миди‑юбка. Легкая ткань.',
+    isNew: false,
   },
   {
     id: 'p8',
@@ -81,5 +88,8 @@ export const products: Product[] = [
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     description:
       'Белая рубашка из хлопка. Машинная стирка при 40°C.',
+    isNew: false,
   },
 ]
+
+export default products

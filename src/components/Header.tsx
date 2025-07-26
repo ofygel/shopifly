@@ -4,7 +4,12 @@ import Link from 'next/link'
 import { useUIStore } from '@/store/ui'
 import { m, LazyMotion, domAnimation } from 'framer-motion'
 
-export default function Header() {
+interface HeaderProps {
+  activeView: 'home' | 'catalog' | 'new'
+  onNav: (view: 'home' | 'catalog' | 'new') => void
+}
+
+export default function Header({ activeView, onNav }: HeaderProps) {
   const open = useUIStore((s) => s.openPanel)
 
   return (
@@ -22,10 +27,26 @@ export default function Header() {
 
           {/* DESKTOP NAV */}
           <nav className="hidden lg:flex items-center gap-6 text-sm">
-            <Link href="/catalog" className="hover:text-white/80">Каталог</Link>
-            <button onClick={() => open('favorites')} className="hover:text-white/80">Избранное</button>
-            <button onClick={() => open('profile')} className="hover:text-white/80">Профиль</button>
-            <button onClick={() => open('contacts')} className="hover:text-white/80">Контакты</button>
+            <button
+              className={activeView === 'catalog' ? 'text-white' : 'text-neutral-300'}
+              onClick={() => onNav('catalog')}
+            >
+              Каталог
+            </button>
+            <button
+              className={activeView === 'new' ? 'text-white' : 'text-neutral-300'}
+              onClick={() => onNav('new')}
+            >
+              Новинки
+            </button>
+            <a href="/favorites" className="text-neutral-300 hover:text-white/80">Избранное</a>
+            <a href="/contacts" className="text-neutral-300 hover:text-white/80">Контакты</a>
+            <button
+              onClick={() => open('profile')}
+              className="hover:text-white/80"
+            >
+              Профиль
+            </button>
             <button
               onClick={() => open('cart')}
               className="relative hover:text-white/80"
