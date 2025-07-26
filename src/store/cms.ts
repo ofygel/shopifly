@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { nanoid } from 'nanoid';
 
-// Типы для продуктов
+// Тип товара
 export type Product = {
   id: string;
   name: string;
@@ -16,10 +16,14 @@ export type Product = {
   order: number;
 };
 
-// Тип для плиток слайд-шоу на главном экране
+// Тип плитки слайд-шоу на главной странице
 export type Highlight = {
   id: string;
   images: string[];
+  title?: string;      // заголовок
+  badge?: string;      // бейдж (например, «Новинка»)
+  link?: string;       // ссылка при клике
+  intervalMs?: number; // интервал смены кадра в мс
 };
 
 // Настройки главной страницы
@@ -27,10 +31,10 @@ export type HomeSettings = {
   heroTitle?: string;
   heroSubtitle?: string;
   highlights: Highlight[];
-  tags?: string[]; // добавлено свойство tags
+  tags?: string[];
 };
 
-// Объединённые настройки
+// Общие настройки приложения
 export type Settings = {
   home: HomeSettings;
 };
@@ -46,7 +50,7 @@ export type CMSState = {
   updateSettings: (patch: Partial<Settings>) => void;
 };
 
-// Хранилище Zustand с persist в localStorage
+// Хранилище Zustand с персистом в localStorage
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -63,6 +67,10 @@ export const useCMSStore = create<CMSState>()(
                 '/images/highlights/capsule-2.jpg',
                 '/images/highlights/capsule-3.jpg',
               ],
+              title: 'Capsule Collection',
+              badge: 'Новинка',
+              link: '/catalog?tag=capsule',
+              intervalMs: 5000,
             },
             {
               id: nanoid(),
@@ -71,9 +79,13 @@ export const useCMSStore = create<CMSState>()(
                 '/images/highlights/summer-2.jpg',
                 '/images/highlights/summer-3.jpg',
               ],
+              title: 'Summer Vibes',
+              badge: 'Распродажа',
+              link: '/catalog?tag=summer',
+              intervalMs: 4000,
             },
           ],
-          tags: [], // инициализация tags
+          tags: [],
         },
       },
 
@@ -124,5 +136,5 @@ export const useCMSStore = create<CMSState>()(
   )
 );
 
-// alias для удобного импорта
+// Экспорт alias для удобства импорта
 export { useCMSStore as useCMS };
