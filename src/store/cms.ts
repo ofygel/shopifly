@@ -1,9 +1,11 @@
+"use client";
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { nanoid } from 'nanoid';
 
-// Тип продукта
-export type Product = {
+// === Types ===
+export interface Product {
   id: string;
   name: string;
   price: number;
@@ -14,39 +16,35 @@ export type Product = {
   createdAt: string;
   updatedAt: string;
   order: number;
-};
+}
 
-// Тип плитки-«highlight» на главной странице
-export type Highlight = {
+export interface Highlight {
   id: string;
-  images: string[];
-  title?: string;
-  badge?: string;
-  link?: string;
-  intervalMs?: number;
-};
+  images: string[];      // пути к изображениям слайда
+  title?: string;        // заголовок плитки
+  badge?: string;        // бейдж (например, «Новинка»)
+  link?: string;         // ссылка при клике
+  intervalMs?: number;   // интервал смены кадра
+}
 
-// Тип контакта для панели контактов
-export type Contact = {
+export interface Contact {
   id: string;
   type: 'phone' | 'email' | 'address' | string;
   label: string;
   value: string;
-};
+}
 
-// Настройки главной страницы
-export type HomeSettings = {
+export interface HomeSettings {
   heroTitle?: string;
   heroSubtitle?: string;
   highlights: Highlight[];
-  tags?: string[];
-};
+  tags: string[];
+}
 
-// Общие настройки приложения
-export type Settings = {
+export interface Settings {
   home: HomeSettings;
   contacts: Contact[];
-};
+}
 
 // Интерфейс состояния CMS
 export interface CMSState {
@@ -59,23 +57,67 @@ export interface CMSState {
   updateSettings(patch: Partial<Settings>): void;
 }
 
-// Создание Zustand-хранилища с персистом
+// === Store Initialization ===
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
-      // Начальные значения
+      // --- Initial state ---
       products: [],
       settings: {
         home: {
-          heroTitle: '',
-          heroSubtitle: '',
-          highlights: [],
-          tags: [],
+          heroTitle: 'Создай свой стиль',
+          heroSubtitle: 'Ощути премиум‑качество женской одежды',
+          highlights: [
+            {
+              id: nanoid(),
+              images: [
+                '/images/highlights/capsule-1.jpg',
+                '/images/highlights/capsule-2.jpg',
+                '/images/highlights/capsule-3.jpg',
+              ],
+              title: 'Capsule Collection',
+              badge: 'Новинка',
+              link: '/catalog?tag=capsule',
+              intervalMs: 5000,
+            },
+            {
+              id: nanoid(),
+              images: [
+                '/images/highlights/summer-1.jpg',
+                '/images/highlights/summer-2.jpg',
+                '/images/highlights/summer-3.jpg',
+              ],
+              title: 'Summer Vibes',
+              badge: 'Акция',
+              link: '/catalog?tag=summer',
+              intervalMs: 4000,
+            },
+          ],
+          tags: ['Новинки', 'Распродажа'],
         },
-        contacts: [],
+        contacts: [
+          {
+            id: nanoid(),
+            type: 'phone',
+            label: 'Телефон',
+            value: '+7 (727) 123-45-67',
+          },
+          {
+            id: nanoid(),
+            type: 'email',
+            label: 'Email',
+            value: 'info@shopifly.kz',
+          },
+          {
+            id: nanoid(),
+            type: 'address',
+            label: 'Адрес',
+            value: 'г. Алматы, ул. Достык, 123',
+          },
+        ],
       },
 
-      // Действия для продуктов
+      // --- Actions ---
       createProduct: (data) => {
         const timestamp = new Date().toISOString();
         const newItem: Product = {
@@ -113,7 +155,6 @@ export const useCMSStore = create<CMSState>()(
         set((state) => ({ products: [...state.products, copy] }));
       },
 
-      // Действие для обновления всех настроек
       updateSettings: (patch) =>
         set((state) => ({ settings: { ...state.settings, ...patch } })),
     }),
@@ -124,5 +165,5 @@ export const useCMSStore = create<CMSState>()(
   )
 );
 
-// Экспорт alias для удобного импорта
+// Экспорт alias
 export { useCMSStore as useCMS };

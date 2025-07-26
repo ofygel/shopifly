@@ -1,148 +1,91 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
+"use client";
 
-// Тип продукта
-export type Product = {
-  id: string;
-  name: string;
-  price: number;
-  imageUrl: string;
-  discount?: number;
-  sizes?: string[];
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-  order: number;
-};
+import { m, LazyMotion, domAnimation } from 'framer-motion';
+import Link from 'next/link';
+import { useCMS } from '@/store/cms';
+import HighlightsColumn from './HighlightsColumn';
+import HighlightsMobile from './HighlightsMobile';
 
-// Тип плитки-«highlight» на главной
-export type Highlight = {
-  id: string;
-  images: string[];
-  title?: string;
-  badge?: string;
-  link?: string;
-  intervalMs?: number;
-};
+export default function HeroSection() {
+  const home = useCMS((s) => s.settings.home);
+  const tags = home.tags ?? [];
 
-// Тип контакта
-export type Contact = {
-  id: string;
-  type: 'phone' | 'email' | 'address' | string;
-  label: string;
-  value: string;
-};
+  const title = home.heroTitle || 'Создай свой стиль\nвместе с нами';
+  const subtitle =
+    home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса';
 
-// Настройки главной страницы
-export type HomeSettings = {
-  heroTitle?: string;
-  heroSubtitle?: string;
-  highlights: Highlight[];
-  tags?: string[];
-};
+  return (
+    <LazyMotion features={domAnimation}>
+      <section className="relative flex items-start md:items-center md:min-h-[calc(100vh-3.5rem)]">
+        <div className="container mx-auto px-4 pt-6 md:pt-12 lg:pt-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_200px] gap-8 items-start">
+            {/* текст */}
+            <div>
+              {tags.length > 0 && (
+                <m.div
+                  className="flex flex-wrap gap-2 mb-6 md:mb-8"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-white/80 text-sm backdrop-blur"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </m.div>
+              )}
 
-// Общие настройки приложения
-export type Settings = {
-  home: HomeSettings;
-  contacts: Contact[];
-};
+              <m.h1
+                className="text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.05] text-white max-w-[14ch] whitespace-pre-wrap"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+              >
+                {title}
+              </m.h1>
 
-// Состояние CMS Store
-export type CMSState = {
-  products: Product[];
-  settings: Settings;
-  createProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => Product;
-  updateProduct: (id: string, patch: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  duplicateProduct: (id: string) => void;
-  updateSettings: (patch: Partial<Settings>) => void;
-};
+              <m.p
+                className="mt-4 md:mt-5 text-white/70 text-base md:text-lg max-w-[48ch]"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.03 }}
+              >
+                {subtitle}
+              </m.p>
 
-export const useCMSStore = create<CMSState>()(
-  persist(
-    (set, get) => ({
-      products: [],
-      settings: {
-        home: {
-          heroTitle: '',
-          heroSubtitle: '',
-          highlights: [
-            {
-              id: nanoid(),
-              images: [
-                '/images/highlights/capsule-1.jpg',
-                '/images/highlights/capsule-2.jpg',
-                '/images/highlights/capsule-3.jpg',
-              ],
-              title: 'Capsule Collection',
-              badge: 'Новинка',
-              link: '/catalog?tag=capsule',
-              intervalMs: 5000,
-            },
-            {
-              id: nanoid(),
-              images: [
-                '/images/highlights/summer-1.jpg',
-                '/images/highlights/summer-2.jpg',
-                '/images/highlights/summer-3.jpg',
-              ],
-              title: 'Summer Vibes',
-              badge: 'Распродажа',
-              link: '/catalog?tag=summer',
-              intervalMs: 4000,
-            },
-          ],
-          tags: [],
-        },
-        contacts: [],
-      },
+              <m.div
+                className="mt-6 md:mt-8 flex gap-3"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.06 }}
+              >
+                <Link
+                  href="/catalog"
+                  className="px-5 py-2.5 rounded-2xl bg-white text-black font-medium hover:bg-white/90 transition text-base"
+                >
+                  Каталог
+                </Link>
+                <Link
+                  href="/catalog?sort=new"
+                  className="px-5 py-2.5 rounded-2xl border border-white/20 text-white/90 hover:bg-white/10 transition text-base"
+                >
+                  Новинки
+                </Link>
+              </m.div>
+            </div>
 
-      createProduct: (data) => {
-        const timestamp = new Date().toISOString();
-        const newItem: Product = {
-          ...data,
-          id: nanoid(),
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          order: get().products.length,
-        };
-        set((state) => ({ products: [...state.products, newItem] }));
-        return newItem;
-      },
+            {/* десктоп‑слайдер */}
+            <HighlightsColumn items={home.highlights ?? []} />
 
-      updateProduct: (id, patch) =>
-        set((state) => ({
-          products: state.products.map((p) =>
-            p.id === id ? { ...p, ...patch, updatedAt: new Date().toISOString() } : p
-          ),
-        })),
-
-      deleteProduct: (id) =>
-        set((state) => ({ products: state.products.filter((p) => p.id !== id) })),
-
-      duplicateProduct: (id) => {
-        const src = get().products.find((p) => p.id === id);
-        if (!src) return;
-        const timestamp = new Date().toISOString();
-        const copy: Product = {
-          ...src,
-          id: nanoid(),
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          order: get().products.length,
-        };
-        set((state) => ({ products: [...state.products, copy] }));
-      },
-
-      updateSettings: (patch) =>
-        set((state) => ({ settings: { ...state.settings, ...patch } })),
-    }),
-    {
-      name: 'shopifly-cms',
-      version: 1,
-    }
-  )
-);
-
-export { useCMSStore as useCMS };
+            {/* мобильный слайдер */}
+            <HighlightsMobile items={home.highlights ?? []} />
+          </div>
+        </div>
+      </section>
+    </LazyMotion>
+  );
+}
