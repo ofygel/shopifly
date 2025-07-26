@@ -1,40 +1,47 @@
+// src/components/panels/ProductTile.tsx
 'use client'
 
+import Image from 'next/image'
 import { Product } from '@/types/product'
 import { useUIStore } from '@/store/ui'
 
-export default function ProductTile({ product }: { product: Product }) {
-  const open = useUIStore((s) => s.openPanel)
-  const cover = product.preview ?? product.images?.[0]
+interface Props {
+  product: Product
+}
+
+export default function ProductTile({ product }: Props) {
+  const openPanel = useUIStore((s) => s.openPanel)
+  // Берём основное изображение напрямую
+  const cover = product.imageUrl
 
   return (
     <button
-      className="group relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-white/5"
-      onClick={() => open('product', product)}
+      onClick={() => openPanel('product', product)}
+      className="
+        group relative
+        flex flex-col items-start
+        rounded-2xl overflow-hidden
+        focus:outline-none focus:ring-2 focus:ring-white
+      "
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      {cover ? (
-        <img
+      {/* Обёртка для картинки */}
+      <div className="relative w-full aspect-square bg-gray-800">
+        <Image
           src={cover}
           alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-          loading="lazy"
+          fill
+          className="object-cover transition-transform group-hover:scale-105"
         />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center text-white/30">
-          no-image
-        </div>
-      )}
+        {product.discount && product.discount > 0 && (
+          <span className="absolute top-2 left-2 bg-black/70 text-white text-sm px-2 py-1 rounded-lg">
+            -{product.discount}%
+          </span>
+        )}
+      </div>
 
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-100" />
-
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <div className="text-white text-lg font-semibold leading-snug">
-          {product.name}
-        </div>
-        <div className="text-white/80 text-sm mt-1">
-          {product.price.toLocaleString()} ₸
-        </div>
+      {/* Цена под картинкой */}
+      <div className="mt-2 text-white text-lg font-medium">
+        {product.price.toLocaleString()} ₸
       </div>
     </button>
   )
