@@ -10,7 +10,6 @@ export default function VideoBg() {
         loop
         playsInline
         preload="auto"
-        poster="/images/silk-poster.jpg"
         className="fixed inset-0 w-[100vw] h-[100vh] object-cover pointer-events-none z-[-1]"
         onError={(e) => console.error('VIDEO ERROR', e.currentTarget.error)}
         onCanPlay={(e) => {

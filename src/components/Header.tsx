@@ -23,9 +23,9 @@ export default function Header() {
           {/* DESKTOP NAV */}
           <nav className="hidden lg:flex items-center gap-6 text-sm">
             <Link href="/catalog" className="hover:text-white/80">Каталог</Link>
-            <Link href="/favorites" className="hover:text-white/80">Избранное</Link>
-            <Link href="/profile" className="hover:text-white/80">Профиль</Link>
-            <Link href="/contacts" className="hover:text-white/80">Контакты</Link>
+            <button onClick={() => open('favorites')} className="hover:text-white/80">Избранное</button>
+            <button onClick={() => open('profile')} className="hover:text-white/80">Профиль</button>
+            <button onClick={() => open('contacts')} className="hover:text-white/80">Контакты</button>
             <button
               onClick={() => open('cart')}
               className="relative hover:text-white/80"

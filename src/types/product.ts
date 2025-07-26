@@ -1,20 +1,10 @@
-export type ProductStatus = 'draft' | 'published' | 'archived'
-
-export type Product = {
+// src/types/product.ts
+export interface Product {
   id: string
   name: string
-  price: number
-  images: string[]
-  preview?: string
-  sizes?: string[]
+  price: number      // в тенге
+  imageUrl: string   // путь от public/, например "/images/p1.jpg"
+  discount?: number  // процент скидки
+  sizes?: string[]   // доступные размеры
   description?: string
-  shipping?: string
-  returns?: string
-  tags?: string[]
-  collectionId?: string | null
-  slug?: string
-  order: number
-  status: ProductStatus
-  createdAt: number
-  updatedAt: number
 }
