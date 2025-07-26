@@ -1,4 +1,5 @@
-// Полный файл src/app/catalog/page.tsx
+"use client";
+
 import BackButton from '@/components/BackButton'
 import { ProductGrid } from '@/components/ProductGrid'
 import { products } from '@/data/products'
