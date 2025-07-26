@@ -1,17 +1,18 @@
-'use client'
+"use client";
 
-import { m, LazyMotion, domAnimation } from 'framer-motion'
-import Link from 'next/link'
-import { useCMS } from '@/store/cms'
-import HighlightsColumn from './HighlightsColumn'
-import HighlightsMobile from './HighlightsMobile'
+import { m, LazyMotion, domAnimation } from 'framer-motion';
+import Link from 'next/link';
+import { useCMS } from '@/store/cms';
+import HighlightsColumn from './HighlightsColumn';
+import HighlightsMobile from './HighlightsMobile';
 
 export default function HeroSection() {
-  const home = useCMS((s) => s.settings.home)
+  const home = useCMS((s) => s.settings.home);
+  const tags = home.tags ?? [];
 
-  const title = home.heroTitle || 'Создай свой стиль\nвместе с нами'
+  const title = home.heroTitle || 'Создай свой стиль\nвместе с нами';
   const subtitle =
-    home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса'
+    home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса';
 
   return (
     <LazyMotion features={domAnimation}>
@@ -20,14 +21,14 @@ export default function HeroSection() {
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_200px] gap-8 items-start">
             {/* текст */}
             <div>
-              {home.tags?.length > 0 && (
+              {tags.length > 0 && (
                 <m.div
                   className="flex flex-wrap gap-2 mb-6 md:mb-8"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
                 >
-                  {home.tags.map((t) => (
+                  {tags.map((t) => (
                     <span
                       key={t}
                       className="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-white/80 text-sm backdrop-blur"
@@ -86,5 +87,5 @@ export default function HeroSection() {
         </div>
       </section>
     </LazyMotion>
-  )
+  );
 }
