@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { nanoid } from 'nanoid';
 
-// Тип товара
+// Тип продукта
 export type Product = {
   id: string;
   name: string;
@@ -16,14 +16,22 @@ export type Product = {
   order: number;
 };
 
-// Тип плитки слайд-шоу на главной странице
+// Тип плитки-«highlight» на главной странице
 export type Highlight = {
   id: string;
   images: string[];
-  title?: string;      // заголовок
-  badge?: string;      // бейдж (например, «Новинка»)
-  link?: string;       // ссылка при клике
-  intervalMs?: number; // интервал смены кадра в мс
+  title?: string;
+  badge?: string;
+  link?: string;
+  intervalMs?: number;
+};
+
+// Тип контакта для панели контактов
+export type Contact = {
+  id: string;
+  type: 'phone' | 'email' | 'address' | string;
+  label: string;
+  value: string;
 };
 
 // Настройки главной страницы
@@ -37,58 +45,37 @@ export type HomeSettings = {
 // Общие настройки приложения
 export type Settings = {
   home: HomeSettings;
+  contacts: Contact[];
 };
 
-// Состояние CMS
-export type CMSState = {
+// Интерфейс состояния CMS
+export interface CMSState {
   products: Product[];
   settings: Settings;
-  createProduct: (data: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => Product;
-  updateProduct: (id: string, patch: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
-  duplicateProduct: (id: string) => void;
-  updateSettings: (patch: Partial<Settings>) => void;
-};
+  createProduct(data: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'order'>): Product;
+  updateProduct(id: string, patch: Partial<Product>): void;
+  deleteProduct(id: string): void;
+  duplicateProduct(id: string): void;
+  updateSettings(patch: Partial<Settings>): void;
+}
 
-// Хранилище Zustand с персистом в localStorage
+// Создание Zustand-хранилища с персистом
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
+      // Начальные значения
       products: [],
       settings: {
         home: {
           heroTitle: '',
           heroSubtitle: '',
-          highlights: [
-            {
-              id: nanoid(),
-              images: [
-                '/images/highlights/capsule-1.jpg',
-                '/images/highlights/capsule-2.jpg',
-                '/images/highlights/capsule-3.jpg',
-              ],
-              title: 'Capsule Collection',
-              badge: 'Новинка',
-              link: '/catalog?tag=capsule',
-              intervalMs: 5000,
-            },
-            {
-              id: nanoid(),
-              images: [
-                '/images/highlights/summer-1.jpg',
-                '/images/highlights/summer-2.jpg',
-                '/images/highlights/summer-3.jpg',
-              ],
-              title: 'Summer Vibes',
-              badge: 'Распродажа',
-              link: '/catalog?tag=summer',
-              intervalMs: 4000,
-            },
-          ],
+          highlights: [],
           tags: [],
         },
+        contacts: [],
       },
 
+      // Действия для продуктов
       createProduct: (data) => {
         const timestamp = new Date().toISOString();
         const newItem: Product = {
@@ -126,6 +113,7 @@ export const useCMSStore = create<CMSState>()(
         set((state) => ({ products: [...state.products, copy] }));
       },
 
+      // Действие для обновления всех настроек
       updateSettings: (patch) =>
         set((state) => ({ settings: { ...state.settings, ...patch } })),
     }),
@@ -136,5 +124,5 @@ export const useCMSStore = create<CMSState>()(
   )
 );
 
-// Экспорт alias для удобства импорта
+// Экспорт alias для удобного импорта
 export { useCMSStore as useCMS };
