@@ -1,9 +1,9 @@
-// Убираем здесь весь dynamic – теперь SplashClient сам отвечает за ssr:false
+// src/app/layout.tsx
 import './globals.css'
-import { Providers } from './providers'
+import SplashManager from '@/components/SplashManager'
 import VideoBg from '@/components/VideoBg'
 import Header from '@/components/Header'
-import SplashClient from '@/components/SplashClient'
+import { Providers } from './providers'
 
 export default function RootLayout({
   children,
@@ -13,16 +13,16 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className="relative overflow-x-hidden text-white">
-        {/* теперь рендерим клиент‑компонент */}
-        <SplashClient />
-
-        <VideoBg />
-        <Providers>
-          <Header />
-          <main className="relative z-10 pt-16">
-            {children}
-          </main>
-        </Providers>
+        {/* SplashManager сам рендерит Splash и плавно показывает контент */}
+        <SplashManager>
+          <VideoBg />
+          <Providers>
+            <Header />
+            <main className="relative z-10 pt-16">
+              {children}
+            </main>
+          </Providers>
+        </SplashManager>
       </body>
     </html>
   )
