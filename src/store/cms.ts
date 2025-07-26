@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { nanoid } from 'nanoid';
 
-// Типы товаров
+// Типы для продуктов
 export type Product = {
   id: string;
   name: string;
@@ -22,16 +22,20 @@ export type Highlight = {
   images: string[];
 };
 
+// Настройки главной страницы
 export type HomeSettings = {
   heroTitle?: string;
   heroSubtitle?: string;
   highlights: Highlight[];
+  tags?: string[]; // добавлено свойство tags
 };
 
+// Объединённые настройки
 export type Settings = {
   home: HomeSettings;
 };
 
+// Состояние CMS
 export type CMSState = {
   products: Product[];
   settings: Settings;
@@ -42,7 +46,7 @@ export type CMSState = {
   updateSettings: (patch: Partial<Settings>) => void;
 };
 
-// Хранилище Zustand с персистом в localStorage
+// Хранилище Zustand с persist в localStorage
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -69,6 +73,7 @@ export const useCMSStore = create<CMSState>()(
               ],
             },
           ],
+          tags: [], // инициализация tags
         },
       },
 
