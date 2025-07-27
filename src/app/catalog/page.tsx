@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
 import BackButton from '@/components/BackButton'
-import { ProductGrid } from '@/components/ProductGrid'
+import ProductGrid from '@/components/ProductGrid'
 import products from '@/data/products'
 
 export default function CatalogPage() {

@@ -1,4 +1,3 @@
-// src/components/QuickViewModal.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -10,15 +9,14 @@ interface Props {
   onClose: () => void
 }
 
-export function QuickViewModal({ product, onClose }: Props) {
+const QuickViewModal = ({ product, onClose }: Props) => {
   const tabs = ['Описание', 'Доставка', 'Возврат'] as const
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('Описание')
   const [mounted, setMounted] = useState(false)
 
-  // гарантируем, что sizes — это всегда массив
+  // sizes всегда массив
   const sizes = product.sizes ?? []
 
-  // включаем портал только на клиенте
   useEffect(() => {
     setMounted(true)
   }, [])
@@ -46,7 +44,7 @@ export function QuickViewModal({ product, onClose }: Props) {
         "
         onClick={(e) => e.stopPropagation()}
       >
-        {/** ========== ЛЕВАЯ ЧАСТЬ: КАРТИНКА ========== */}
+        {/* ЛЕВАЯ ЧАСТЬ: КАРТИНКА */}
         <div className="flex-shrink-0 p-4 flex justify-center">
           <img
             src={product.imageUrl}
@@ -57,16 +55,16 @@ export function QuickViewModal({ product, onClose }: Props) {
               object-contain
             "
           />
-          {product.discount! > 0 && (
+          {(product.discount ?? 0) > 0 && (
             <span className="absolute top-6 left-6 bg-black/70 text-white text-sm px-2 py-1 rounded">
               -{product.discount}% 
             </span>
           )}
         </div>
 
-        {/** ========== ПРАВАЯ ЧАСТЬ: КОНТЕНТ ========== */}
+        {/* ПРАВАЯ ЧАСТЬ: КОНТЕНТ */}
         <div className="relative flex-1 p-6 text-white flex flex-col">
-          {/** Кнопка закрыть */}
+          {/* Кнопка закрыть */}
           <button
             onClick={onClose}
             aria-label="Закрыть"
@@ -75,14 +73,14 @@ export function QuickViewModal({ product, onClose }: Props) {
             &times;
           </button>
 
-          {/** Название + цена */}
+          {/* Название + цена */}
           <h2 className="text-3xl font-bold mb-2">{product.name}</h2>
           <p className="text-2xl mb-4">{product.price.toLocaleString()} ₸</p>
 
-          {/** Размеры */}
+          {/* Размеры */}
           {sizes.length > 0 && (
             <div className="flex gap-2 mb-6">
-              {sizes.map((s) => (
+              {sizes.map((s: string) => (
                 <button
                   key={s}
                   className="border border-white rounded px-4 py-2 hover:bg-white/20 transition"
@@ -93,12 +91,12 @@ export function QuickViewModal({ product, onClose }: Props) {
             </div>
           )}
 
-          {/** Добавить в корзину */}
+          {/* Добавить в корзину */}
           <button className="w-full bg-white text-black py-3 rounded-lg font-medium mb-6">
             Добавить в корзину
           </button>
 
-          {/** Табы */}
+          {/* Табы */}
           <nav className="flex gap-6 border-b border-white/30 mb-4">
             {tabs.map((t) => (
               <button
@@ -117,7 +115,7 @@ export function QuickViewModal({ product, onClose }: Props) {
             ))}
           </nav>
 
-          {/** Контент таба */}
+          {/* Контент таба */}
           <div className="text-sm flex-1 overflow-auto">
             {activeTab === 'Описание' && <p>{product.description}</p>}
             {activeTab === 'Доставка' && (
@@ -133,3 +131,5 @@ export function QuickViewModal({ product, onClose }: Props) {
     document.body
   )
 }
+
+export default QuickViewModal
