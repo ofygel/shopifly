@@ -3,13 +3,21 @@ import { FC } from 'react'
 import { m, LazyMotion, domAnimation } from 'framer-motion'
 import { useUIStore } from '@/store/ui'
 
+type View =
+  | 'home'
+  | 'catalog'
+  | 'new'
+  | 'favorites'
+  | 'contacts'
+  | 'profile'
+  | 'cart'
+
 interface HeaderProps {
-  activeView: 'home' | 'catalog' | 'new'
-  onNav: (view: 'home' | 'catalog' | 'new') => void
+  activeView: View
+  onNav: (view: View) => void
 }
 
 const Header: FC<HeaderProps> = ({ activeView, onNav }) => {
-  const openPanel = useUIStore(s => s.openPanel)
   return (
     <LazyMotion features={domAnimation}>
       <m.header
@@ -26,29 +34,42 @@ const Header: FC<HeaderProps> = ({ activeView, onNav }) => {
           >
             SHOPIFLY
           </button>
-
           <nav className="flex items-center gap-6 text-sm">
             <button
               type="button"
-              onClick={() => onNav('catalog')}
-              className={`cursor-pointer ${activeView==='catalog'?'text-white':'text-neutral-300'}`}
-            >Каталог</button>
+              className="text-neutral-300 hover:text-white/80 cursor-pointer"
+              onClick={() => onNav('favorites')}
+            >
+              Избранное
+            </button>
             <button
               type="button"
-              onClick={() => onNav('new')}
-              className={`cursor-pointer ${activeView==='new'?'text-white':'text-neutral-300'}`}
-            >Новинки</button>
-            <a href="/favorites" className="text-neutral-300 hover:text-white/80 cursor-pointer">Избранное</a>
-            <a href="/contacts" className="text-neutral-300 hover:text-white/80 cursor-pointer">Контакты</a>
-            <button type="button" onClick={()=>openPanel('profile')} className="hover:text-white/80 cursor-pointer">Профиль</button>
-            <button type="button" onClick={()=>openPanel('cart')} className="relative hover:text-white/80 cursor-pointer" aria-label="Корзина">🛒</button>
+              className="text-neutral-300 hover:text-white/80 cursor-pointer"
+              onClick={() => onNav('contacts')}
+            >
+              Контакты
+            </button>
+            <button
+              type="button"
+              className="hover:text-white/80 cursor-pointer"
+              onClick={() => onNav('profile')}
+            >
+              Профиль
+            </button>
+            <button
+              type="button"
+              className="relative hover:text-white/80 cursor-pointer"
+              onClick={() => onNav('cart')}
+              aria-label="Корзина"
+            >
+              🛒
+            </button>
           </nav>
-
           <button
             type="button"
             className="lg:hidden p-2 -mr-2 cursor-pointer"
-            onClick={()=>openPanel('menu')}
             aria-label="Открыть меню"
+            // Можно добавить обработчик мобильного меню позже
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

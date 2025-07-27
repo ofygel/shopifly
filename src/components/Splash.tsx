@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface SplashProps {
   /** длительность всего сплэша в мс (видео + логотип + пауза) */
-  duration?: number
+  duration?: 6000
   /** колбэк, когда сплэш окончательно скрыт */
   onFinish: () => void
 }

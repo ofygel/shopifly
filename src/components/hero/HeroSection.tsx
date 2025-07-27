@@ -1,18 +1,19 @@
-"use client";
+'use client'
 
-import { m, LazyMotion, domAnimation } from 'framer-motion';
-import Link from 'next/link';
-import { useCMS } from '@/store/cms';
-import HighlightsColumn from './HighlightsColumn';
-import HighlightsMobile from './HighlightsMobile';
+import { m, LazyMotion, domAnimation } from 'framer-motion'
+import { useCMS } from '@/store/cms'
+import { useSpa } from '@/spa'
+import HighlightsColumn from './HighlightsColumn'
+import HighlightsMobile from './HighlightsMobile'
 
 export default function HeroSection() {
-  const home = useCMS((s) => s.settings.home);
-  const tags = home.tags ?? [];
+  const home = useCMS((s) => s.settings.home)
+  const tags = home.tags ?? []
+  const { setView } = useSpa()
 
-  const title = home.heroTitle || 'Создай свой стиль\nвместе с нами';
+  const title = home.heroTitle || 'Создай свой стиль\nвместе с нами'
   const subtitle =
-    home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса';
+    home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса'
 
   return (
     <LazyMotion features={domAnimation}>
@@ -63,18 +64,20 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.06 }}
               >
-                <Link
-                  href="/catalog"
+                <button
+                  type="button"
                   className="px-5 py-2.5 rounded-2xl bg-white text-black font-medium hover:bg-white/90 transition text-base"
+                  onClick={() => setView('catalog')}
                 >
                   Каталог
-                </Link>
-                <Link
-                  href="/catalog?sort=new"
+                </button>
+                <button
+                  type="button"
                   className="px-5 py-2.5 rounded-2xl border border-white/20 text-white/90 hover:bg-white/10 transition text-base"
+                  onClick={() => setView('new')}
                 >
                   Новинки
-                </Link>
+                </button>
               </m.div>
             </div>
 
@@ -87,5 +90,5 @@ export default function HeroSection() {
         </div>
       </section>
     </LazyMotion>
-  );
+  )
 }

@@ -1,4 +1,3 @@
-// spa.tsx
 'use client'
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
@@ -6,8 +5,24 @@ import HomeView from '@/views/HomeView'
 import CatalogView from '@/views/CatalogView'
 import CartView from '@/views/CartView'
 import CheckoutView from '@/views/CheckoutView'
+import NewArrivalsOverlay from '@/components/NewArrivalsOverlay'
+import FavoritesPage from '@/views/FavoritesPage'
+import ContactsPage from '@/views/ContactsPage'
+import ProfilePanel from '@/components/panels/ProfilePanel'
 
-type View = 'home' | 'catalog' | 'cart' | 'checkout'
+export type View =
+  | 'home'
+  | 'catalog'
+  | 'cart'
+  | 'checkout'
+  | 'new'
+  | 'favorites'
+  | 'contacts'
+  | 'profile'
+
+// дальше код как обычно...
+
+
 type SpaCtxType = { view: View; setView: (v: View) => void }
 
 const SpaCtx = createContext<SpaCtxType | null>(null)
@@ -24,7 +39,7 @@ export function useSpa() {
 }
 
 export function SPA() {
-  const { view } = useSpa()
+  const { view, setView } = useSpa()
 
   useEffect(() => {
     console.log('SPA view ->', view)
@@ -32,7 +47,7 @@ export function SPA() {
 
   return (
     <>
-      {/* dev-бейдж — потом удалишь */}
+      {/* dev-бейдж — потом уберёшь */}
       <div className="fixed bottom-2 left-2 z-[9999] px-2 py-1 bg-black/70 text-white text-xs rounded">
         view: {view}
       </div>
@@ -41,6 +56,10 @@ export function SPA() {
       {view === 'cart' && <CartView />}
       {view === 'checkout' && <CheckoutView />}
       {view === 'home' && <HomeView />}
+      {view === 'new' && <NewArrivalsOverlay onClose={() => setView('home')} />}
+      {view === 'favorites' && <FavoritesPage onClose={() => setView('home')} />}
+      {view === 'contacts' && <ContactsPage onClose={() => setView('home')} />}
+      {view === 'profile' && <ProfilePanel onClose={() => setView('home')} />}
     </>
   )
 }

@@ -1,7 +1,6 @@
 "use client";
-
-import { SPA } from "../spa";
+import ClientLayout from '@/components/ClientLayout';
 
 export default function Page() {
-  return <SPA />;
+  return <ClientLayout />;
 }
