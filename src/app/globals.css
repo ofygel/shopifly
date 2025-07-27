@@ -1,26 +1,24 @@
-/* src/globals.css */
-
+/* src/app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* -------------------------------------------------------
-   1. Цветовые переменные
-------------------------------------------------------- */
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --text-default: #ffffff;
-  --text-new: #dcdcdc;
-}
-
-/* Тёмная тема на уровне ОС */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html, body {
+    background-color: transparent;
+    height: 100%;
+    margin: 0;
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  body {
+    background: transparent;
+    color: var(--text-default);
   }
 }
+
+/* остальные ваши стили… */
+
 
 /* -------------------------------------------------------
    2. Базовые сбросы и стили через Tailwind Layer
