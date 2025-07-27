@@ -1,3 +1,4 @@
+// src/components/SplashManager.tsx
 'use client'
 
 import { ReactNode, useState } from 'react'
@@ -14,7 +15,7 @@ export default function SplashManager({ children }: Props) {
     <>
       {!splashDone && (
         <Splash
-          duration={6000}
+          duration={4000}        // <-- было 6000, стало 4000
           onFinish={() => setSplashDone(true)}
         />
       )}

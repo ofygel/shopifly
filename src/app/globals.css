@@ -4,7 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Цветовые переменные */
+/* -------------------------------------------------------
+   1. Цветовые переменные
+------------------------------------------------------- */
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
@@ -12,7 +14,7 @@
   --text-new: #dcdcdc;
 }
 
-/* Темная тема через media */
+/* Тёмная тема на уровне ОС */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -20,74 +22,45 @@
   }
 }
 
-/* Глобальные базовые стили */
+/* -------------------------------------------------------
+   2. Базовые сбросы и стили через Tailwind Layer
+------------------------------------------------------- */
 @layer base {
   html, body {
     background-color: theme('colors.neutral.900');
+    height: 100%;
+    margin: 0;
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  body {
+    background: var(--background);
+    color: var(--text-default);
   }
 }
 
-/* Базовые стили */
-html, body {
-  height: 100%;
-  background: transparent;
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-  color: var(--text-default);
-}
-
-/* Скрыть скроллбар, если нужно */
+/* -------------------------------------------------------
+   3. Скрытие скроллбаров для кастомных каруселей
+------------------------------------------------------- */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 .scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-/* Основной контейнер приложения */
-.app {
-  position: relative;
-  color: var(--text-default);
-}
-
-/* Активное состояние "Новинки" */
-.app.new-active,
-.new-active,
-body.new-active {
-  color: var(--text-new);
-}
-
-/* Затемнение + блюр фона при новых */
-.app.new-active main::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  z-index: 10;
-  pointer-events: none;
-}
-
-/* Плавное появление оверлея */
-.new-active section {
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* fadeIn анимация */
+/* -------------------------------------------------------
+   4. Анимации (utility классы)
+------------------------------------------------------- */
 @keyframes fadeIn {
-  from { opacity: 0 }
-  to   { opacity: 1 }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
 }
 
-/* Плавающая анимация (пример для кнопок) */
 @keyframes float {
   0%   { transform: translateY(0); }
   50%  { transform: translateY(-6px); }

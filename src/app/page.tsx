@@ -1,6 +1,6 @@
-"use client";
-import ClientLayout from '@/components/ClientLayout';
+// src/app/page.tsx
+import HeroSection from '@/components/hero/HeroSection'
 
-export default function Page() {
-  return <ClientLayout />;
+export default function HomePage() {
+  return <HeroSection />
 }

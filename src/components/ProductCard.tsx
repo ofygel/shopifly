@@ -1,24 +1,87 @@
-'use client'
-import Image from 'next/image'
-import { Product } from '@/types/product'
-import { useUIStore } from '@/store/ui'
+import React from 'react'
+import type { Product } from '@/types/product'
 
-interface Props { product: Product }
-const ProductCard: React.FC<Props> = ({ product }) => {
-  const openQuickView = useUIStore(s=>s.openQuickView)
-  return (
-    <div className="relative group bg-gray-900 rounded-xl overflow-hidden shadow-lg h-full">
-      <div className="relative w-full h-64 overflow-hidden">
-        <Image src={product.imageUrl} alt={product.name} fill className="object-cover transition-transform group-hover:scale-105" />
-        {product.isNew && <span className="absolute top-3 left-3 bg-white/80 text-black text-xs uppercase px-2 py-1 rounded">Новинка</span>}
-        {(product.discount??0)>0 && <span className="absolute top-3 right-3 bg-red-600 text-white text-sm px-2 py-1 rounded">-{product.discount}%</span>}
+interface ProductCardProps {
+  product: Product
+  viewMode: 'grid' | 'list'
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode }) => {
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString('ru-RU') + ' ₽'
+  }
+
+  if (viewMode === 'list') {
+    return (
+      <div className="bg-black/30 backdrop-blur-md rounded-xl p-4 flex flex-col sm:flex-row gap-4 hover:bg-black/40 transition-colors border border-white/10">
+        <div className="bg-gray-700 border-2 border-dashed rounded-xl w-16 h-16 sm:w-24 sm:h-24" />
+        
+        <div className="flex-grow">
+          <h3 className="text-white font-medium">{product.name}</h3>
+          <div className="flex items-center gap-3 mt-2">
+            <span className="text-pink-500 font-bold text-lg">
+              {formatPrice(product.price)}
+            </span>
+            {product.originalPrice && (
+              <span className="text-gray-400 line-through">
+                {formatPrice(product.originalPrice)}
+              </span>
+            )}
+            {product.discount && (
+              <span className="bg-pink-500 text-white text-xs px-2 py-1 rounded">
+                -{product.discount}%
+              </span>
+            )}
+          </div>
+          <div className="mt-2 text-gray-400 text-sm">
+            <p>Категория: {product.category}</p>
+            <p>Размеры: {product.sizes?.join(', ')}</p>
+            <p>Цвет: {product.color}</p>
+          </div>
+        </div>
       </div>
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="text-white text-lg font-medium">{product.name}</h3>
-        <span className="text-white mb-2">{product.price.toLocaleString()} ₸</span>
-        <button onClick={()=>openQuickView(product)} className="mt-auto bg-white/20 text-white text-sm py-2 rounded transition-opacity opacity-0 group-hover:opacity-100">Быстрый просмотр</button>
+    )
+  }
+
+  // Режим сетки
+  return (
+    <div className="bg-black/30 backdrop-blur-md rounded-xl p-4 flex flex-col hover:bg-black/40 transition-colors border border-white/10">
+      <div className="relative">
+        <div className="bg-gray-700 border-2 border-dashed rounded-xl w-full h-48" />
+        
+        {product.discount && (
+          <div className="absolute top-2 right-2 bg-pink-500 text-white text-sm font-bold px-2 py-1 rounded">
+            -{product.discount}%
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-4">
+        <h3 className="text-white font-medium">{product.name}</h3>
+        
+        <div className="flex items-center gap-3 mt-2">
+          <span className="text-pink-500 font-bold text-lg">
+            {formatPrice(product.price)}
+          </span>
+          
+          {product.originalPrice && (
+            <span className="text-gray-400 line-through text-sm">
+              {formatPrice(product.originalPrice)}
+            </span>
+          )}
+        </div>
+        
+        <div className="mt-3 text-gray-400 text-sm">
+          <p>Размеры: {product.sizes?.join(', ')}</p>
+          <p>Цвет: {product.color}</p>
+        </div>
+        
+        <button className="mt-4 w-full py-2 bg-white/10 text-white hover:bg-white/20 rounded-md transition-colors">
+          Подробнее
+        </button>
       </div>
     </div>
   )
 }
+
 export default ProductCard

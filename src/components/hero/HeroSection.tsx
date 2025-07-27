@@ -1,26 +1,26 @@
 'use client'
 
+import Link from 'next/link'
 import { m, LazyMotion, domAnimation } from 'framer-motion'
 import { useCMS } from '@/store/cms'
-import { useSpa } from '@/spa'
 import HighlightsColumn from './HighlightsColumn'
 import HighlightsMobile from './HighlightsMobile'
 
 export default function HeroSection() {
   const home = useCMS((s) => s.settings.home)
   const tags = home.tags ?? []
-  const { setView } = useSpa()
-
   const title = home.heroTitle || 'Создай свой стиль\nвместе с нами'
   const subtitle =
     home.heroSubtitle || 'Ощутите уникальную коллекцию женской одежды премиум‑класса'
+  const highlights = home.highlights ?? []
 
   return (
     <LazyMotion features={domAnimation}>
       <section className="relative flex items-start md:items-center md:min-h-[calc(100vh-3.5rem)]">
         <div className="container mx-auto px-4 pt-6 md:pt-12 lg:pt-20">
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_200px] gap-8 items-start">
-            {/* текст */}
+
+            {/* Текстовый блок */}
             <div>
               {tags.length > 0 && (
                 <m.div
@@ -64,28 +64,29 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.06 }}
               >
-                <button
-                  type="button"
+                <Link
+                  href="/catalog"
                   className="px-5 py-2.5 rounded-2xl bg-white text-black font-medium hover:bg-white/90 transition text-base"
-                  onClick={() => setView('catalog')}
                 >
                   Каталог
-                </button>
-                <button
-                  type="button"
+                </Link>
+                <Link
+                  href="/new"
                   className="px-5 py-2.5 rounded-2xl border border-white/20 text-white/90 hover:bg-white/10 transition text-base"
-                  onClick={() => setView('new')}
                 >
                   Новинки
-                </button>
+                </Link>
               </m.div>
             </div>
 
-            {/* десктоп‑слайдер */}
-            <HighlightsColumn items={home.highlights ?? []} />
-
-            {/* мобильный слайдер */}
-            <HighlightsMobile items={home.highlights ?? []} />
+            {/* Десктоп‑слайдер хайлайтов */}
+            <div className="hidden lg:block">
+              <HighlightsColumn items={highlights} />
+            </div>
+            {/* Мобильный слайдер хайлайтов */}
+            <div className="block lg:hidden">
+              <HighlightsMobile items={highlights} />
+            </div>
           </div>
         </div>
       </section>

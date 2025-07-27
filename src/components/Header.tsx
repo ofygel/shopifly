@@ -1,23 +1,10 @@
+// src/components/Header.tsx
 'use client'
-import { FC } from 'react'
+
+import Link from 'next/link'
 import { m, LazyMotion, domAnimation } from 'framer-motion'
-import { useUIStore } from '@/store/ui'
 
-type View =
-  | 'home'
-  | 'catalog'
-  | 'new'
-  | 'favorites'
-  | 'contacts'
-  | 'profile'
-  | 'cart'
-
-interface HeaderProps {
-  activeView: View
-  onNav: (view: View) => void
-}
-
-const Header: FC<HeaderProps> = ({ activeView, onNav }) => {
+export default function Header() {
   return (
     <LazyMotion features={domAnimation}>
       <m.header
@@ -27,58 +14,30 @@ const Header: FC<HeaderProps> = ({ activeView, onNav }) => {
         className="fixed inset-x-0 top-0 z-50 backdrop-blur bg-neutral-900/30 text-white"
       >
         <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => onNav('home')}
-            className="font-bold text-lg tracking-wide cursor-pointer focus:outline-none"
-          >
+          <Link href="/" className="font-bold text-lg tracking-wide focus:outline-none">
             SHOPIFLY
-          </button>
+          </Link>
+
           <nav className="flex items-center gap-6 text-sm">
-            <button
-              type="button"
-              className="text-neutral-300 hover:text-white/80 cursor-pointer"
-              onClick={() => onNav('favorites')}
-            >
+            <Link href="/favorites" className="text-neutral-300 hover:text-white/80">
               Избранное
-            </button>
-            <button
-              type="button"
-              className="text-neutral-300 hover:text-white/80 cursor-pointer"
-              onClick={() => onNav('contacts')}
-            >
+            </Link>
+            <Link href="/contacts" className="text-neutral-300 hover:text-white/80">
               Контакты
-            </button>
-            <button
-              type="button"
-              className="hover:text-white/80 cursor-pointer"
-              onClick={() => onNav('profile')}
-            >
+            </Link>
+            <Link href="/profile" className="text-neutral-300 hover:text-white/80">
               Профиль
-            </button>
-            <button
-              type="button"
-              className="relative hover:text-white/80 cursor-pointer"
-              onClick={() => onNav('cart')}
+            </Link>
+            <Link
+              href="/cart"
               aria-label="Корзина"
+              className="relative text-neutral-300 hover:text-white/80"
             >
               🛒
-            </button>
+            </Link>
           </nav>
-          <button
-            type="button"
-            className="lg:hidden p-2 -mr-2 cursor-pointer"
-            aria-label="Открыть меню"
-            // Можно добавить обработчик мобильного меню позже
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </button>
         </div>
       </m.header>
     </LazyMotion>
   )
 }
-
-export default Header

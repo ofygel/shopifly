@@ -1,3 +1,4 @@
+// src/components/Splash.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -5,13 +6,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 interface SplashProps {
   /** длительность всего сплэша в мс (видео + логотип + пауза) */
-  duration?: 6000
+  duration?: number    // поменяли тип на number
   /** колбэк, когда сплэш окончательно скрыт */
   onFinish: () => void
 }
 
 export default function Splash({
-  duration = 6000,
+  duration = 4000,    // <-- было 6000, стало 4000
   onFinish,
 }: SplashProps) {
   const [showLogo, setShowLogo] = useState(false)
@@ -19,7 +20,6 @@ export default function Splash({
   const [hideSplash, setHideSplash] = useState(false)
 
   useEffect(() => {
-    // блокируем прокрутку страницы
     document.body.style.overflow = 'hidden'
 
     // 1) через 1 с — fade‑in логотипа
@@ -30,7 +30,6 @@ export default function Splash({
     const t3 = setTimeout(() => {
       setHideSplash(true)
       document.body.style.overflow = ''
-      // ждём окончание анимации скрытия (0.6сек) и зовём onFinish
       setTimeout(onFinish, 600)
     }, duration)
 

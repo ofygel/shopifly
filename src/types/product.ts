@@ -7,4 +7,7 @@ export interface Product {
   isNew?: boolean
   sizes?: string[]
   description?: string
+  originalPrice?: number
+  category?: string
+  color?: string
 }
