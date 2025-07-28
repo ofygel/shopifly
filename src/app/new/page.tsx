@@ -24,35 +24,35 @@ export default function NewPage() {
       price: 3400,
       dayOfWeek: "Воскресенье",
       code: "HOBWHEA",
-      mediaUrl: "/black-velvet-top.jpg",
+      mediaUrl: "/images/products/dress1.jpg",
       mediaType: "image"
     },
     {
       id: 2,
       name: "Black Buttoned Dress",
       price: 5600,
-      mediaUrl: "/black-dress.mp4",
+      mediaUrl: "/images/products/black-dress.mp4",
       mediaType: "video"
     },
     {
       id: 3,
       name: "Black Lace Gown",
       price: 6200,
-      mediaUrl: "/black-lace-gown.jpg",
+      mediaUrl: "/images/products/details.jpg",
       mediaType: "image"
     },
     {
       id: 4,
       name: "Victorian Corset",
       price: 4800,
-      mediaUrl: "/victorian-corset.jpg",
+      mediaUrl: "/images/products/closeup.jpg",
       mediaType: "image"
     },
     {
       id: 5,
       name: "Gothic Long Coat",
       price: 7200,
-      mediaUrl: "/gothic-coat.mp4",
+      mediaUrl: "/images/products/gothic-coat.mp4",
       mediaType: "video"
     }
   ];
@@ -124,9 +124,8 @@ export default function NewPage() {
           transition={{ duration: 0.6 }}
         />
         
-        {/* Основные изменения: уменьшены вертикальные отступы */}
         <motion.div 
-          className="relative z-10 pt-12" // Уменьшен отступ сверху (было pt-16)
+          className="relative z-10 pt-12"
           initial={{ y: 50, opacity: 0 }}
           animate={{ 
             y: isMounted ? 0 : 50, 
@@ -140,10 +139,10 @@ export default function NewPage() {
         >
           <BackButton />
           
-          <div className="container mx-auto py-4 px-6 flex flex-col"> {/* Уменьшен py (было py-6) */}
-            <div className="mb-4"> {/* Уменьшен mb (было mb-6) */}
+          <div className="container mx-auto py-4 px-6 flex flex-col">
+            <div className="mb-4">
               <motion.h1 
-                className="text-4xl font-bold text-stone-100 mb-1" // Уменьшен mb
+                className="text-4xl font-bold text-stone-100 mb-1"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
@@ -151,16 +150,16 @@ export default function NewPage() {
                 НОВИНКИ
               </motion.h1>
               <motion.p 
-                className="text-stone-300 font-medium mb-1" // Уменьшен mb
+                className="text-stone-300 font-medium mb-1"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.45 }}
               >
                 Capsule Collection: Black Muse – {newItems.length} новинок
               </motion.p>
-              <div className="text-stone-600 text-center my-1">---</div> {/* Уменьшен my */}
+              <div className="text-stone-600 text-center my-1">---</div>
               <motion.p 
-                className="text-stone-300 max-w-xl text-sm" // Уменьшен размер текста
+                className="text-stone-300 max-w-xl text-sm"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -204,17 +203,19 @@ export default function NewPage() {
                     )}
                     
                     {item.mediaUrl && item.mediaType && (
-                      <div className="w-full h-36 mb-3 overflow-hidden rounded-md bg-stone-800/50 flex items-center justify-center"> {/* Уменьшена высота */}
+                      <div className="w-full aspect-[4/5] mb-3 overflow-hidden rounded-md bg-stone-800/50 flex items-center justify-center">
                         {item.mediaType === 'image' ? (
                           <img 
                             src={item.mediaUrl} 
                             alt={item.name} 
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
+                            style={{ maxHeight: '100%', maxWidth: '100%' }}
                           />
                         ) : (
                           <video 
                             src={item.mediaUrl}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
+                            style={{ maxHeight: '100%', maxWidth: '100%' }}
                             autoPlay
                             loop
                             muted
