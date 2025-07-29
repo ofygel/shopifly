@@ -1,4 +1,3 @@
-// src/components/panels/ProductTile.tsx
 'use client'
 
 import Image from 'next/image'
@@ -10,13 +9,18 @@ interface Props {
 }
 
 export default function ProductTile({ product }: Props) {
-  const openPanel = useUIStore((s) => s.openPanel)
+  const setSelectedProduct = useUIStore((s) => s.setSelectedProduct)
   // Берём основное изображение напрямую
   const cover = product.imageUrl
 
+  const handleClick = () => {
+    setSelectedProduct(product)
+    // setOpenPanel('product') // удалить эту строку!
+  }
+
   return (
     <button
-      onClick={() => openPanel('product', product)}
+      onClick={handleClick}
       className="
         group relative
         flex flex-col items-start

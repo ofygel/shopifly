@@ -1,37 +1,61 @@
-'use client'
-
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 
-export type FavItem = {
+// Товар в избранном
+export interface FavItem {
   id: string
   name: string
-  image?: string
-  price?: number
+  price: number
+  image: string
 }
 
-// Переименовали State → FavoritesState и сделали именованный экспорт
-export type FavoritesState = {
+// Состояние стора
+export interface FavoritesState {
   items: FavItem[]
   add: (item: FavItem) => void
   remove: (id: string) => void
-  clear: () => void
   has: (id: string) => boolean
+  clear: () => void
 }
 
-export const useFavorites = create<FavoritesState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-      add: (item) =>
-        set((s) =>
-          s.items.find((i) => i.id === item.id) ? s : { items: [...s.items, item] }
-        ),
-      remove: (id) =>
-        set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
-      clear: () => set({ items: [] }),
-      has: (id) => !!get().items.find((i) => i.id === id),
-    }),
-    { name: 'favorites' }
-  )
-)
+// Получить из localStorage
+function loadFavorites(): FavItem[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem('favorites')
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+// Сохранить в localStorage
+function saveFavorites(items: FavItem[]) {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem('favorites', JSON.stringify(items))
+  } catch {}
+}
+
+export const useFavorites = create<FavoritesState>((set, get) => ({
+  items: loadFavorites(),
+
+  add: (item) => set(state => {
+    if (state.items.some(f => f.id === item.id)) return state
+    const items = [...state.items, item]
+    saveFavorites(items)
+    return { items }
+  }),
+
+  remove: (id) => set(state => {
+    const items = state.items.filter(item => item.id !== id)
+    saveFavorites(items)
+    return { items }
+  }),
+
+  has: (id) => get().items.some(item => item.id === id),
+
+  clear: () => set(() => {
+    saveFavorites([])
+    return { items: [] }
+  }),
+}))

@@ -20,9 +20,6 @@ export type View =
   | 'contacts'
   | 'profile'
 
-// дальше код как обычно...
-
-
 type SpaCtxType = { view: View; setView: (v: View) => void }
 
 const SpaCtx = createContext<SpaCtxType | null>(null)
@@ -59,7 +56,7 @@ export function SPA() {
       {view === 'new' && <NewArrivalsOverlay onClose={() => setView('home')} />}
       {view === 'favorites' && <FavoritesPage onClose={() => setView('home')} />}
       {view === 'contacts' && <ContactsPage onClose={() => setView('home')} />}
-      {view === 'profile' && <ProfilePanel onClose={() => setView('home')} />}
+      {view === 'profile' && <ProfilePanel />}
     </>
   )
 }

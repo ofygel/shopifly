@@ -3,7 +3,7 @@
 import { useCallback } from 'react'
 import Image from 'next/image'
 import { useUIStore } from '@/store/ui'
-import { useFavorites, FavoritesState, FavItem } from '@/store/favorites'
+import { useFavorites, FavItem } from '@/store/favorites'
 import { Product } from '@/types/product'
 
 interface Props {
@@ -11,8 +11,7 @@ interface Props {
 }
 
 export default function ProductModal({ product }: Props) {
-  const closePanel = useUIStore((s) => s.closePanel)
-  const openPanel  = useUIStore((s) => s.openPanel)
+  const setOpenPanel = useUIStore((s) => s.setOpenPanel)
 
   // Получаем экшены/селекторы из favorites
   const addFav    = useFavorites((s) => s.add)
@@ -20,8 +19,10 @@ export default function ProductModal({ product }: Props) {
   const inFav     = useFavorites((s) => s.has(product.id))
 
   const onAddToCart = useCallback(() => {
-    openPanel('cart', product)
-  }, [openPanel, product])
+    setOpenPanel('cart')
+  }, [setOpenPanel])
+
+  const handleClose = () => setOpenPanel(null)
 
   const toggleFav = useCallback(() => {
     if (inFav) {
@@ -40,7 +41,7 @@ export default function ProductModal({ product }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4"
-      onClick={() => closePanel('product')}
+      onClick={handleClose}
       role="dialog"
       aria-modal="true"
     >
@@ -66,7 +67,7 @@ export default function ProductModal({ product }: Props) {
         {/* Контент */}
         <div className="p-6 text-white flex flex-col">
           <button
-            onClick={() => closePanel('product')}
+            onClick={handleClose}
             aria-label="Закрыть"
             className="absolute top-4 right-4 text-2xl leading-none"
           >

@@ -1,59 +1,79 @@
-'use client'
+// src/components/modals/MobileMenu.tsx
+import { m } from 'framer-motion'
 
-import { m, LazyMotion, domAnimation } from 'framer-motion'
-import Link from 'next/link'
-import { useUIStore } from '@/store/ui'
+interface MobileMenuProps {
+  isOpen: boolean
+  onClose: () => void
+  onModalToggle: (modal: 'favorites' | 'contacts' | 'profile' | 'cart') => void
+  cartItemsCount: number
+  favoritesCount: number
+}
 
-export default function MobileMenuPanel() {
-  const isOpen = useUIStore((s) => s.isOpen('menu'))
-  const close = useUIStore((s) => s.closePanel)
-
+export default function MobileMenu({ 
+  isOpen, 
+  onClose,
+  onModalToggle,
+  cartItemsCount,
+  favoritesCount
+}: MobileMenuProps) {
+  const handleClick = (modal: 'favorites' | 'contacts' | 'profile' | 'cart') => {
+    onModalToggle(modal)
+    onClose()
+  }
+  
   return (
-    <LazyMotion features={domAnimation}>
-      {isOpen && (
-        <m.div
-          className="fixed inset-0 z-50 flex"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+    <m.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={isOpen ? { 
+        opacity: 1, 
+        height: 'auto',
+        transition: { duration: 0.3 }
+      } : { 
+        opacity: 0, 
+        height: 0,
+        transition: { duration: 0.3 }
+      }}
+      className="md:hidden fixed inset-x-0 top-14 bg-neutral-900 z-50 shadow-xl overflow-hidden"
+    >
+      <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
+        <button 
+          onClick={() => handleClick('favorites')}
+          className="text-left py-3 border-b border-neutral-800 text-lg flex justify-between items-center"
         >
-          {/* Overlay */}
-          <m.div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => close('menu')}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-
-          {/* Side panel */}
-          <m.div
-            className="relative bg-neutral-900 text-white w-3/4 max-w-xs h-full p-6"
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'tween', duration: 0.3 }}
-          >
-            <button
-              className="absolute top-4 right-4 text-white text-2xl"
-              onClick={() => close('menu')}
-              aria-label="Закрыть меню"
-            >
-              ×
-            </button>
-
-            <nav className="flex flex-col gap-4 mt-8 text-lg">
-              <Link href="/catalog"   onClick={() => close('menu')}>Каталог</Link>
-              <Link href="/favorites" onClick={() => close('menu')}>Избранное</Link>
-              <Link href="/profile"   onClick={() => close('menu')}>Профиль</Link>
-              <Link href="/contacts"  onClick={() => close('menu')}>Контакты</Link>
-              <button onClick={() => close('menu')} className="text-left">Корзина</button>
-            </nav>
-          </m.div>
-        </m.div>
-      )}
-    </LazyMotion>
+          <span>Избранное</span>
+          {favoritesCount > 0 && (
+            <span className="bg-rose-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+              {favoritesCount}
+            </span>
+          )}
+        </button>
+        
+        <button 
+          onClick={() => handleClick('contacts')}
+          className="text-left py-3 border-b border-neutral-800 text-lg"
+        >
+          Контакты
+        </button>
+        
+        <button 
+          onClick={() => handleClick('profile')}
+          className="text-left py-3 border-b border-neutral-800 text-lg"
+        >
+          Профиль
+        </button>
+        
+        <button
+          onClick={() => handleClick('cart')}
+          className="text-left py-3 flex justify-between items-center text-lg"
+        >
+          <span>Корзина</span>
+          {cartItemsCount > 0 && (
+            <span className="bg-rose-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
+              {cartItemsCount}
+            </span>
+          )}
+        </button>
+      </div>
+    </m.div>
   )
 }
